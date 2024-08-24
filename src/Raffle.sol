@@ -36,13 +36,37 @@ pragma solidity 0.8.19;
  */
 
 contract Raffle {
+    /* Errors */
+    error Raffle__SendMoreToEnterRaffle();
+    error Raffle__TransferFailed();
+    error Raffle_RaffleNotOpen();
+    error Raffle__UpkeepNotNeeded(
+        uint256 balance,
+        uint256 playersLength,
+        uint256 s_raffleState
+    );
+
+    /* Type Declarations */
+    enum RaffleState {
+        OPEN,
+        CALCULATING
+    }
+
+    /* State Variables */
     uint256 private immutable i_entranceFee;
 
     constructor(uint256 entranceFee) {
         i_entranceFee = entranceFee;
     }
 
-    function enterRaffle() public payable {}
+    function enterRaffle() public payable {
+        // require(msg.value >= i_entranceFee, "Not enough ETH sent.");
+        // require(msg.value >= i_entranceFee, SendMoreToEnterRaffle()); // only works on very specific versions of solidity
+
+        if (msg.value < i_entranceFee) {
+            revert Raffle__SendMoreToEnterRaffle();
+        }
+    }
 
     function pickWinner() public {}
 
